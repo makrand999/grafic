@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <button id="showPickerButton">Pick an item</button>
+        
+        <div id="pickerContainer" class="hidden">
+            <select id="itemPicker">
+                <option value="" disabled selected>Select an item</option>
+                <option value="cone">Cone</option>
+                <option value="cylinder">Cylinder</option>
+                <option value="sphere">Sphere</option>
+            </select>
+        </div>
+
+        <div id="formContainer" class="hidden">
+            <form id="itemForm">
+                <div id="dynamicInputs"></div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
