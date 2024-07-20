@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js 2D Cone Views</title>
+    <style>
+        body { margin: 0; }
+        svg { display: block; margin: auto; }
+    </style>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <script>
+          const params = new URLSearchParams(window.location.search);
+        const distanceHP = parseFloat(params.get('distanceHP')) || 20;
+        const distanceVP = parseFloat(params.get('distanceVP')) || 20;
+        const heightOrSlant = params.get('heightOrSlant');
+        const height_ = parseFloat(params.get('heightOrSlantValue')) || 200;
+        const radius = parseFloat(params.get('radius'));
+        const axisOrBaseInclination = params.get('axisOrBaseInclination');
+        const inclinationHP = parseFloat(params.get('inclinationHP')) || 0;
+        const inclinationVP = parseFloat(params.get('inclinationVP')) || 0;
+        const width = window.innerWidth;
+        const height =  window.innerHeight;
+        const coneHeight = 100;
+        const coneRadius = 50;
+        const inclinationAngle = inclinationHP;
+        const angleRadians = inclinationAngle * Math.PI / 180;
+        const distancefromVP=distanceVP;
+        const distancefromHP = 50;
+        const distance= width / 10;
+        const cos =  Math.cos(angleRadians);
+        const sin =  Math.sin(angleRadians);
+        const circleRadius = 50;
+        const slant_height = Math.sqrt(coneRadius*coneRadius + coneHeight*coneHeight);
+        const svg = d3.select('body').append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        // Draw horizontal dividing line
+        svg.append('line')
+            .attr('x1', 0)
+            .attr('y1', height / 2)
+            .attr('x2', width)
+            .attr('y2', height / 2)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);
+
+        // Front view
+        const frontViewGroup = svg.append('g')
+            .attr('transform', `translate(${width / 3}, ${height / 2 - distancefromHP})`);
+
+        // Front view - cone
+//line AC        
+        frontViewGroup.append('line')
+        //point C
+            .attr('x1', 0)
+            .attr('y1', -coneHeight)
+        //point A    
+            .attr('x2', -coneRadius)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);
+        //point C name
+            frontViewGroup.append('text')
+                  .attr('x', 0)
+                  .attr('y', -coneHeight-10) 
+                  .attr('text-anchor', 'middle')
+                  .text('C\'')
+                  .attr('font-family', 'Arial')
+                  .attr('font-size', 14)
+                  .attr('fill', 'black')
+                  .attr('font-weight', 'bold');
+//line CB                  
+        frontViewGroup.append('line')
+        //point C
+            .attr('x1', 0)
+            .attr('y1', -coneHeight)
+        //point B   
+            .attr('x2', coneRadius)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);
+//line AB
+        frontViewGroup.append('line')
+            .attr('x1', -coneRadius)
+            .attr('y1', 0)
+            .attr('x2', coneRadius)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);
+         //piont A 
+             frontViewGroup.append('text')
+               .attr('x', -coneRadius-10)
+               .attr('y', 12) 
+               .attr('text-anchor', 'middle')
+               .text('A\'')
+               .attr('font-family', 'Arial')
+               .attr('font-size', 14)
+               .attr('fill', 'black')
+               .attr('font-weight', 'bold');
+         //point B
+             frontViewGroup.append('text')
+               .attr('x', coneRadius+10)
+               .attr('y', 12) 
+               .attr('text-anchor', 'middle')
+               .text('B\'')
+               .attr('font-family', 'Arial')
+               .attr('font-size', 14)
+               .attr('fill', 'black')
+               .attr('font-weight', 'bold');
+    
+// top to down lines from normal dig the frist one projection shadow line
+//left
+        frontViewGroup.append('line')
+            .attr('x1', -coneRadius)
+            .attr('y1', 0)
+            .attr('x2', -coneRadius)
+            .attr('y2', distancefromHP+distancefromVP+100)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+//right 
+        frontViewGroup.append('line')
+            .attr('x1', coneRadius)
+            .attr('y1', 0)
+            .attr('x2', coneRadius)
+            .attr('y2', distancefromHP+distancefromVP+100)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+    
+ //inclination
+         //base line
+         frontViewGroup.append('line')
+            .attr('x1', -coneRadius - 200)
+            .attr('y1', 0)
+            .attr('x2', coneRadius + distance + 200)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2)
+            .attr('stroke-opacity', 0.3);
+         //left  line
+         frontViewGroup.append('line')
+            .attr('x1', -coneRadius*2*cos +( distance + coneRadius))
+            .attr('y1',  -(coneRadius*2)*sin)
+            .attr('x2', (-coneRadius)*cos + (distance +coneRadius) + coneHeight*sin )
+            .attr('y2', (-coneRadius)*sin - coneHeight*cos )
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);
+         //right line
+
+        frontViewGroup.append('line')
+            .attr('x1',  (-coneRadius)*cos + (distance +coneRadius) + coneHeight*sin )
+            .attr('y1', (-coneRadius)*sin - coneHeight*cos )
+            .attr('x2', coneRadius + distance)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);
+        //bottom line
+        frontViewGroup.append('line')
+            .attr('x1', (-2*coneRadius)*cos + distance+coneRadius)
+            .attr('y1',  -coneRadius*sin*2)
+            .attr('x2', coneRadius + distance)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);
+            //projecton lines from up to down 
+            //left 
+            frontViewGroup.append('line')
+            .attr('x1', (-2*coneRadius)*cos + distance+coneRadius)
+            .attr('y1',  distancefromHP+distancefromVP+200)
+            .attr('x2', (-2*coneRadius)*cos + distance+coneRadius)
+            .attr('y2', -coneRadius*sin*2)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+            //center
+            frontViewGroup.append('line')
+            .attr('x1', ((-coneRadius)*cos + distance+coneRadius))
+            .attr('y1',  distancefromHP+distancefromVP+200)
+            .attr('x2', ((-coneRadius)*cos + distance+coneRadius))
+            .attr('y2', -coneRadius*sin)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+            //right
+            frontViewGroup.append('line')
+            .attr('x1',  coneRadius + distance)
+            .attr('y1', distancefromHP+distancefromVP+200 )
+            .attr('x2', coneRadius + distance)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+            //line from A to A'
+            frontViewGroup.append('line')
+            .attr('x1', (-coneRadius)*cos + (distance +coneRadius) + coneHeight*sin )
+            .attr('y1', (-coneRadius)*sin - coneHeight*cos )
+            .attr('x2',  (-coneRadius)*cos + (distance +coneRadius) + coneHeight*sin )
+            .attr('y2',  coneHeight+distanceHP+distanceVP+coneRadius*2 )
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+
+        // Front view - axis -normal 
+                                                                               //line A'O'
+        frontViewGroup.append('line')
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', 0)
+            .attr('y2', -coneHeight)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '5,5');
+         //point O center
+         frontViewGroup.append('text')
+                  .attr('x', 10)
+                  .attr('y', -5) 
+                  .attr('text-anchor', 'middle')
+                  .text('O\'')
+                  .attr('font-family', 'Arial')
+                  .attr('font-size', 14)
+                  .attr('fill', 'black')
+                  .attr('font-weight', 'bold');   
+            //axis through inclined fig inclined
+            frontViewGroup.append('line')
+            .attr('x1',  (-coneRadius)*cos + (distance +coneRadius) + coneHeight*sin )
+            .attr('y1', (-coneRadius)*sin - coneHeight*cos )
+            .attr('x2', (-(coneRadius)*cos + distance + coneRadius))
+            .attr('y2', -coneRadius*sin)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '5,5');
+
+  // Angle in degrees
+
+ // Calculate the projection of the circle (full circle)
+
+
+
+        // Front view - inclination angle
+     /*   frontViewGroup.append('line')
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', -coneHeight * Math.sin(angleRadians))
+            .attr('y2', -coneHeight * Math.cos(angleRadians))
+            .attr('stroke', 'red')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '5,5');
+
+        frontViewGroup.append('text')
+            .attr('x', -coneHeight * Math.sin(angleRadians) / 2)
+            .attr('y', -coneHeight * Math.cos(angleRadians) / 2)
+            .attr('fill', 'red')
+            .attr('dy', -10)
+           // .text(`${inclinationAngle}°`);
+*/
+        // Top view
+        const topViewGroup = svg.append('g')
+            .attr('transform', `translate(${width / 3}, ${height / 2 + distancefromVP + coneRadius})`);
+        // Top view - circle for base of cone
+        topViewGroup.append('circle')
+            .attr('cx', 0)
+            .attr('cy', 0)
+            .attr('r', coneRadius)
+            .attr('stroke', 'black')
+            .attr('fill', 'none')
+            .attr('stroke-width', 2);
+
+        // Top view - axis
+ topViewGroup.append('line')
+            .attr('x1', 0)
+            .attr('y1', -coneRadius)
+            .attr('x2', 0)
+            .attr('y2', coneRadius)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '5,5');
+            //point C and point O
+            topViewGroup.append('text')
+                  .attr('x', 15)
+                  .attr('y', -5) 
+                  .attr('text-anchor', 'middle')
+                  .text('O,C')
+                  .attr('font-family', 'Arial')
+                  .attr('font-size', 14)
+                  .attr('fill', 'black')
+                  .attr('font-weight', 'bold');
+         
+
+         //line from circle to  circle top
+ topViewGroup.append('line')
+            .attr('x1', -coneRadius)
+            .attr('y1', -coneRadius)
+            .attr('x2', distance+coneRadius+20)
+            .attr('y2', -coneRadius)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+        //bottom line connecting two circle       
+ topViewGroup.append('line')
+            .attr('x1', -coneRadius)
+            .attr('y1', coneRadius)
+            .attr('x2', distance+coneRadius+20)
+            .attr('y2', coneRadius)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+ //from center  
+ topViewGroup.append('line')   
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', distance+2*coneRadius)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-opacity', 0.3);
+ //horizontal diameter
+topViewGroup.append('line')
+            .attr('x1', -coneRadius)
+            .attr('y1', 0)
+            .attr('x2', coneRadius)
+            .attr('y2', 0)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '5,5');
+            //piont A
+            topViewGroup.append('text')
+                  .attr('x',-coneRadius-10)
+                  .attr('y', 10 ) 
+                  .attr('text-anchor', 'middle')
+                  .text('A')
+                  .attr('font-family', 'Arial')
+                  .attr('font-size', 14)
+                  .attr('fill', 'black')
+                  .attr('font-weight', 'bold');
+            //pint B
+            topViewGroup.append('text')
+                  .attr('x', coneRadius+10 )
+                  .attr('y', 11) 
+                  .attr('text-anchor', 'middle')
+                  .text('B')
+                  .attr('font-family', 'Arial')
+                  .attr('font-size', 14)
+                  .attr('fill', 'black')
+                  .attr('font-weight', 'bold');
+            const projectedPoints = [];
+ for (let angle = 0; angle <= 360; angle += 5) {
+    const radians = angle * Math.PI / 180;
+    const x = circleRadius * Math.cos(radians)*Math.cos(angleRadians);
+    const y = circleRadius * Math.sin(radians);
+    // Projected height
+
+    // Adjust coordinates for SVG
+    const projectedX = width/3  - coneRadius*cos + distance + x + coneRadius
+    const projectedY =  y + height/2 + distancefromVP + coneRadius;
+
+    projectedPoints.push([projectedX, projectedY]);
+}
+
+  // Draw the projected circle
+   const line = d3.line()
+    .x(d => d[0])
+    .y(d => d[1]); 
+
+    if (angleRadians*180/Math.PI < 90 && angleRadians*180/Math.PI > 0) {
+    // Split the points into two halves
+    const midIndex = Math.floor(projectedPoints.length / 4);
+    const firstHalf = projectedPoints.slice(midIndex  ,projectedPoints.length -midIndex );
+    const secondHalf = projectedPoints.slice(projectedPoints.length -midIndex -1,projectedPoints.length);
+    const thirdHalf = projectedPoints.slice(0,midIndex+1);
+
+    // Draw the first half with a dotted line
+    svg.append('path')
+        .datum(firstHalf)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+        .attr('d', line)
+        
+
+    // Draw the second half with a solid line
+    svg.append('path')
+        .datum(secondHalf)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+        .attr('d', line)
+        .attr('stroke-dasharray', '5,5');
+     svg.append('path')
+        .datum(thirdHalf)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+        .attr('d', line)
+        .attr('stroke-dasharray', '5,5');
+
+} else {
+    // Draw the entire path with a solid line
+    svg.append('path')
+        .datum(projectedPoints)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+        .attr('d', line);
+}
+ //cone top view projection line hp
+ //top
+ topViewGroup.append('line')
+            .attr('x1',  (-coneRadius)*cos + (distance +coneRadius) + coneHeight*sin )
+            .attr('y1',  0 )
+            .attr('x2', ((-coneRadius)*cos + distance+coneRadius))
+            .attr('y2', -coneRadius)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);     
+//downsides
+topViewGroup.append('line')
+            .attr('x1',  (-coneRadius)*cos + (distance +coneRadius) + coneHeight*sin )
+            .attr('y1',  0 )
+            .attr('x2', ((-coneRadius)*cos + distance+coneRadius))
+            .attr('y2', coneRadius)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);   
+        // Top view - inclination line
+      /*  topViewGroup.append('line')
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', coneRadius * Math.sin(angleRadians))
+            .attr('y2', -coneRadius * Math.cos(angleRadians))
+            .attr('stroke', 'red')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '5,5');
+
+        topViewGroup.append('text')
+            .attr('x', coneRadius * Math.sin(angleRadians) / 2)
+            .attr('y', -coneRadius * Math.cos(angleRadians) / 2)
+            .attr('fill', 'red')
+            .attr('dy', -10)
+           // .text('Inclination');
+
+*/
+
+    </script>
+    
+</body>
+</html>
