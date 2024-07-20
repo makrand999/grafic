@@ -23,6 +23,7 @@
         import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
         // Set up the scene
+        const inclinationHP = parseFloat(params.get('inclinationHP')) || 0;
         const scene = new THREE.Scene();
 
         // Set up the camera
@@ -48,7 +49,7 @@
         cone.castShadow = true;
 
         // Rotate the cone by 50 degrees (50 * Math.PI / 180 radians) around the z-axis
-        cone.rotateZ(60 * Math.PI / 180);
+        cone.rotateZ(inclinationHP * Math.PI / 180);
         scene.add(cone);
 
         // Create the horizontal plane geometry and material
