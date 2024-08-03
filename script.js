@@ -37,20 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createConeForm(dynamicInputs) {
         let html = `
-        <div>
-            <label for="distanceHP">Distance from HP:</label>
-            <input type="text" id="distanceHP" name="distanceHP" required>
-        </div>
-        <div>
-            <label for="distanceVP">Distance from VP:</label>
-            <input type="text" id="distanceVP" name="distanceVP" required>
-        </div>
+        
         <div>
             <label for="heightOrSlant">Height or Slant Height:</label>
             <select id="heightOrSlant" name="heightOrSlant" required>
                 <option value="" disabled selected>Select one</option>
                 <option value="height">Height</option>
-                <option value="slantHeight">Slant Height</option>
+               
             </select>
         </div>
         <div id="heightOrSlantInput" class="hidden">
@@ -65,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <label for="axisOrBaseInclination">Axis or Base Inclination:</label>
             <select id="axisOrBaseInclination" name="axisOrBaseInclination" required>
                 <option value="" disabled selected>Select one</option>
-                <option value="axis">Axis Inclination</option>
+                
                 <option value="base">Base Inclination</option>
             </select>
         </div>
@@ -73,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <label for="inclinationHP">Inclination to HP:</label>
             <input type="text" id="inclinationHP" name="inclinationHP" required>
             <label for="inclinationVP">Inclination to VP:</label>
-            <input type="text" id="inclinationVP" name="inclinationVP" required>
+           
         </div>
         `;
         dynamicInputs.innerHTML = html;
